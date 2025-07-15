@@ -1,0 +1,55 @@
+# ===== BUILD STAGE =====
+FROM python:3.11-slim AS build
+
+# Установка зависимостей системы
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Создание пользователя
+# RUN adduser --disabled-password --gecos '' nikita
+
+# Установка рабочей директории
+WORKDIR /pet
+
+# Копируем приложение и зависимости
+COPY ./requirements.txt .
+
+# Создаём виртуальное окружение внутри /opt/venv
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+COPY app/ app/
+COPY .env .
+COPY main.py .
+
+# ===== RUNTIME STAGE =====
+FROM python:3.11-slim AS production
+
+LABEL author="NikitaLeonov"
+
+# Рабочая директория
+WORKDIR /pet
+
+# Копируем виртуальное окружение из build
+COPY --from=build /opt/venv /opt/venv
+
+# Добавляем виртуальное окружение в PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Копируем приложение
+COPY --from=build /pet /pet
+
+# Добавляем пользователя и директорию
+# RUN adduser --disabled-password --gecos '' nikita
+# RUN chown -R nikita:nikita /pet/app
+# USER nikita
+
+# HEALTHCHECK
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+# Запуск приложения
+ENTRYPOINT ["python", "main.py"]

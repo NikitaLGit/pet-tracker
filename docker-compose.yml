@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile_app
+    ports:
+      - "5000:5000"
+    image: trackerpet:latest
+    hostname: trackerpet
+    environment:
+      - FLASK_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=db
+      - DB_NAME=petdb
+      - DB_USER=petuser
+      - DB_PASSWORD=secret
+    volumes:
+      - ./static/uploads:/pet/app/static/uploads
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    # volumes:
+    #   - .:/app
+
+  redis:
+    image: redis:7-alpine
+    hostname: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    hostname: postgres
+    environment:
+      - POSTGRES_DB=petdb
+      - POSTGRES_USER=petuser
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

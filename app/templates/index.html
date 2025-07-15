@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <a href="{{ url_for('add_pet') }}" class="btn btn-primary mb-4">➕ Добавить питомца</a>
+
+  {% if pets %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for pet in pets %}
+        <div class="col">
+          <div class="card h-100">
+            {% if pet.image_filename %}
+              <img src="{{ url_for('static', filename='uploads/' + pet.image_filename) }}" class="card-img-top" alt="{{ pet.name }}">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ pet.name }}</h5>
+              <p class="card-text">
+                Вид: {{ pet.species }}<br>
+                Возраст: {{ pet.age }}<br>
+                {{ pet.description }}
+              </p>
+              <a href="{{ url_for('delete_pet', pet_id=pet.id) }}" class="btn btn-danger btn-sm">Удалить</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Нет добавленных животных.</p>
+  {% endif %}
+{% endblock %}

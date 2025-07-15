@@ -1,0 +1,51 @@
+import os
+from flask import request, redirect, render_template, url_for, current_app
+from werkzeug.utils import secure_filename
+from . import db
+from .models import Pet
+from flask import Blueprint
+
+from flask import current_app as app
+
+@app.route("/")
+def index():
+    pets = Pet.query.all()
+    return render_template("index.html", pets=pets)
+
+@app.route("/add", methods=["GET", "POST"])
+def add_pet():
+    if request.method == "POST":
+        name = request.form["name"]
+        species = request.form["species"]
+        age = request.form.get("age", type=int)
+        description = request.form["description"]
+        image = request.files.get("image")
+
+        filename = None
+        if image and image.filename:
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        new_pet = Pet(
+            name=name,
+            species=species,
+            age=age,
+            description=description,
+            image_filename=filename,
+        )
+        db.session.add(new_pet)
+        db.session.commit()
+        return redirect(url_for("index"))
+
+    return render_template("add.html")
+
+@app.route("/delete/<int:pet_id>")
+def delete_pet(pet_id):
+    pet = Pet.query.get_or_404(pet_id)
+    if pet.image_filename:
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], pet.image_filename)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+    db.session.delete(pet)
+    db.session.commit()
+    return redirect(url_for("index"))

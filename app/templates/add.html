@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label class="form-label">Имя питомца</label>
+      <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Вид</label>
+      <input type="text" name="species" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Возраст</label>
+      <input type="number" name="age" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Описание</label>
+      <textarea name="description" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Фотография</label>
+      <input type="file" name="image" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-success">Добавить</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад</a>
+  </form>
+{% endblock %}

@@ -1,0 +1,4 @@
+.env
+.dockerignore
+/app/test.py
+# pass/
