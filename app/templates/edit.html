@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2 class="mb-4">Редактировать {{ pet.name }}</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label class="form-label">Имя питомца</label>
+      <input type="text" name="name" class="form-control" value="{{ pet.name }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Вид</label>
+      <input type="text" name="species" class="form-control" value="{{ pet.species }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Возраст</label>
+      <input type="number" name="age" class="form-control" value="{{ pet.age }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Описание</label>
+      <textarea name="description" class="form-control">{{ pet.description }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Фотография</label>
+      <input type="file" name="image" class="form-control">
+      {% if pet.image_filename %}
+        <p class="mt-2">Текущее изображение:</p>
+        <img src="{{ url_for('static', filename='uploads/' ~ pet.image_filename) }}" alt="Текущее фото" class="img-thumbnail" style="max-width: 200px;">
+      {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад</a>
+  </form>
+{% endblock %}

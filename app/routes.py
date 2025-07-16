@@ -1,5 +1,5 @@
 import os
-from flask import request, redirect, render_template, url_for, current_app
+from flask import request, redirect, render_template, url_for, flash, current_app
 from werkzeug.utils import secure_filename
 from . import db
 from .models import Pet
@@ -38,6 +38,30 @@ def add_pet():
         return redirect(url_for("index"))
 
     return render_template("add.html")
+
+@app.route('/edit/<int:pet_id>', methods=['GET', 'POST'])
+def edit_pet(pet_id):
+    pet = Pet.query.get_or_404(pet_id)
+
+    if request.method == 'POST':
+        pet.name = request.form['name']
+        pet.species = request.form['species']
+        pet.age = request.form['age']
+        pet.description = request.form['description']
+
+        image = request.files.get('image')
+        if image and image.filename:
+            upload_folder = os.path.join(os.path.dirname(__file__), 'static/uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            image_path = os.path.join(upload_folder, image.filename)
+            image.save(image_path)
+            pet.image_filename = image.filename
+
+        db.session.commit()
+        flash('Данные питомца обновлены')
+        return redirect(url_for('index'))
+
+    return render_template('edit.html', pet=pet)
 
 @app.route("/delete/<int:pet_id>")
 def delete_pet(pet_id):
