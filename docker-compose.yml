@@ -10,13 +10,11 @@ services:
     image: trackerpet:latest
     hostname: trackerpet
     environment:
-      - FLASK_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - DB_HOST=db
-      - DB_NAME=petdb
-      - DB_USER=petuser
-      - DB_PASSWORD=secret
+      - FLASK_ENV=${FLASK_ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
     volumes:
       - ./static/uploads:/pet/app/static/uploads
       - pgdata:/var/lib/postgresql/data
@@ -29,23 +27,14 @@ services:
       - db
       - redis
     restart: unless-stopped
-    # volumes:
-    #   - .:/app
-
-  redis:
-    image: redis:7-alpine
-    hostname: redis
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
 
   db:
     image: postgres:15-alpine
     hostname: postgres
     environment:
-      - POSTGRES_DB=petdb
-      - POSTGRES_USER=petuser
-      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:

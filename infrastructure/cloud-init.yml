@@ -1,0 +1,26 @@
+#cloud-config
+ssh_pwauth: no
+users:
+  - name: ${ssh_name}
+    groups: 
+    - sudo
+    - docker
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+package_update: true
+package_upgrade: false
+
+packages:
+  - docker.io
+  - docker-compose
+  - git
+
+runcmd:
+  - systemctl start docker
+  - systemctl enable docker
+  - usermod -aG docker ubuntu
+  - git clone https://your-repo-url.git /home/ubuntu/app
+  - cd /home/ubuntu/app
+  - docker-compose up -d

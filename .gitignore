@@ -2,3 +2,18 @@
 .dockerignore
 /app/test.py
 # pass/
+#===================Terraform Block===================
+# Local .terraform directories and files
+**/.terraform/*
+.terraform*
+
+!.terraformrc
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# own secret vars store.
+personal.auto.tfvars
+*.tfvars
+#=================Terraform Block End=================
