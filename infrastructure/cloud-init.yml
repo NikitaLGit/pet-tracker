@@ -25,13 +25,12 @@ runcmd:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
   # Добавление Docker репозитория
-<<<<<<< HEAD
   - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
   # Обновление и установка Docker
   - apt-get update
   - apt-get install -y docker-ce docker-ce-cli containerd.io
-=======
+
   - echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -39,12 +38,10 @@ runcmd:
   # Обновление и установка Docker Engine и Compose v2
   - apt-get update
   - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
->>>>>>> 6a27866 (add init)
 
   # Добавление пользователя ${ssh_name} в группу docker
   - usermod -aG docker ${ssh_name}
 
-<<<<<<< HEAD
   # Создание директории для Docker CLI-плагинов
   - mkdir -p /home/${ssh_name}/.docker/cli-plugins
 
@@ -63,13 +60,3 @@ runcmd:
   - git clone https://github.com/NikitaLGit/pet-tracker.git /home/${ssh_name}/app
   - cd /home/${ssh_name}/app
   - docker compose up -d
-<<<<<<< HEAD
-=======
-
->>>>>>> 570465c (minor updates)
-=======
-  # Включение автозапуска Docker и его запуск
-  - systemctl enable docker
-  - systemctl start docker
-
->>>>>>> 6a27866 (add init)
