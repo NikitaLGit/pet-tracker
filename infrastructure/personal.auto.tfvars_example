@@ -1,0 +1,9 @@
+cloud_id = "cloud_id"
+folder_id = "folder_id"
+zone = "ru-central1-a"
+
+metadata_base = {
+    ssh_name = "username"
+    serial-port-enable = 0
+    ssh_public_key = "ssh-ed25519 example example@example"
+}

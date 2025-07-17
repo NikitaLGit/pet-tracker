@@ -1,7 +1,9 @@
 .env
 .dockerignore
 /app/test.py
+/app/static
 # pass/
+
 #===================Terraform Block===================
 # Local .terraform directories and files
 **/.terraform/*
