@@ -13,14 +13,30 @@ package_update: true
 package_upgrade: false
 
 packages:
-  - docker.io
-  - docker-compose
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
   - git
 
 runcmd:
-  - systemctl start docker
+  # Добавление Docker GPG ключа
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+  # Добавление Docker репозитория
+  - echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+  # Обновление и установка Docker Engine и Compose v2
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+  # Добавление пользователя ${ssh_name} в группу docker
+  - usermod -aG docker ${ssh_name}
+
+  # Включение автозапуска Docker и его запуск
   - systemctl enable docker
-  - usermod -aG docker ubuntu
-  - git clone https://your-repo-url.git /home/ubuntu/app
-  - cd /home/ubuntu/app
-  - docker-compose up -d
+  - systemctl start docker
+
