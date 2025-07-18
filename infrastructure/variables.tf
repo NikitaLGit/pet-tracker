@@ -26,7 +26,7 @@ variable "vms_resources" {
   default = {
       instance_name  = "petapp"
       instance_count = 1
-      image_family   = "ubuntu-2004-lts"
+      image_family   = "ubuntu-2204-lts"
       public_ip      = true
     }
   }

@@ -29,6 +29,18 @@ variable "security_group_ingress" {
       v4_cidr_blocks = ["0.0.0.0/0"]
       port           = 443
     },
+    {
+      protocol       = "TCP"
+      description    = "разрешить входящий для приложения"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 5000
+    },
+    {
+      protocol       = "TCP"
+      description    = "разрешить входящий для базы"
+      v4_cidr_blocks = ["0.0.0.0/0"]
+      port           = 5432
+    },
   ]
 }
 

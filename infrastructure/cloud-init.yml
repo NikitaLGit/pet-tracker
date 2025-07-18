@@ -19,6 +19,8 @@ packages:
   - gnupg
   - lsb-release
   - git
+  - curl
+  - net-tools
 
 runcmd:
   # Добавление Docker GPG ключа

@@ -7,6 +7,11 @@ from .models import Pet
 from flask import current_app as app
 
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
+
 @app.route("/")
 def index():
     pets = Pet.query.all()
