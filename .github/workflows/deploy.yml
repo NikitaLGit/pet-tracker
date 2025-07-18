@@ -36,6 +36,23 @@ jobs:
     - name: Build Docker image
       run: docker build -f Dockerfile_app -t trackerpet:latest .
 
-    # Можно добавить:
-    # - name: Push Docker image to registry
-    # - name: Deploy to remote server (через SSH)
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy via SSH
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd /home/${{ secrets.SSH_USER }}/app         # путь к твоему проекту
+          git pull origin main           # забираем свежий код
+          docker compose down            # выключаем старые контейнеры
+          docker compose up -d --build   # билдим и поднимаем новые
+        EOF
