@@ -1,7 +1,8 @@
 .env
 .dockerignore
 /app/test.py
-/app/static
+/static
+/migrations
 # pass/
 
 #===================Terraform Block===================
